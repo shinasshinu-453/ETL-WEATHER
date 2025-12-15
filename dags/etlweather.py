@@ -3,6 +3,7 @@ from airflow.providers.http.hooks.http import HttpHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.decorators import task
 from airflow.utils.dates import days_ago
+from rag_utils import process_weather_embedding
 
 # Constants
 latitude = '10.4597'
@@ -53,6 +54,11 @@ with DAG(
         return transformed_data
 
     @task()
+    def embed_weather_data(transformed_data):
+        """Embed and store weather data in ChromaDB."""
+        process_weather_embedding(transformed_data)
+
+    @task()
     def load_weather_data(transformed_data):
         """Load transformed data into PostgreSQL."""
         pg_hook = PostgresHook(postgres_conn_id=POSTGRES_CONN_ID)
@@ -90,3 +96,4 @@ with DAG(
     raw_data = get_weather_data()
     processed_data = transform_weather_data(raw_data)
     load_weather_data(processed_data)
+    embed_weather_data(processed_data)
