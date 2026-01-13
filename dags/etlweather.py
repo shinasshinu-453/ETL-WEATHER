@@ -6,7 +6,7 @@ from airflow.utils.dates import days_ago
 from rag_utils import process_weather_embedding
 
 # Constants
-latitude = '10.4597'
+latitude = '12.4597'
 longitude = '76.5625'
 POSTGRES_CONN_ID = 'postgres_supabase'
 API_CONN_ID = 'open_meteo_api'
